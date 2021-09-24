@@ -30,8 +30,8 @@ describe MagicBell::Client do
     let(:notifications_url) { api_host + "/notifications" }
 
     context "when recipient is identified by email" do
-      it "creates a notification" do
-        body = {
+      let(:body) do
+        {
           "notification" => {
             "title" => "Welcome to Muziboo",
             "recipients" => [{
@@ -39,9 +39,13 @@ describe MagicBell::Client do
             }]
           }
         }.to_json
+      end
+
+      let(:magicbell) { MagicBell::Client.new }
+
+      it "creates a notification" do
         stub_request(:post, notifications_url).with(headers: headers, body: body).and_return(status: 201, body: "{}")
 
-        magicbell = MagicBell::Client.new
         magicbell.create_notification(
           title: "Welcome to Muziboo",
           recipients: [{
