@@ -43,15 +43,19 @@ describe MagicBell::Client do
 
       let(:magicbell) { MagicBell::Client.new }
 
-      it "creates a notification" do
-        stub_request(:post, notifications_url).with(headers: headers, body: body).and_return(status: 201, body: "{}")
+      context "when the api reports a success" do
+        before do
+          stub_request(:post, notifications_url).with(headers: headers, body: body).and_return(status: 201, body: "{}")
+        end
 
-        magicbell.create_notification(
-          title: "Welcome to Muziboo",
-          recipients: [{
-            email: "john@example.com"
-          }]
-        )
+        it "creates a notification" do
+          magicbell.create_notification(
+            title: "Welcome to Muziboo",
+            recipients: [{
+              email: "john@example.com"
+            }]
+          )
+        end
       end
     end
 
