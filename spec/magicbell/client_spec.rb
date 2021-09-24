@@ -44,17 +44,24 @@ describe MagicBell::Client do
       let(:magicbell) { MagicBell::Client.new }
 
       context "when the api reports a success" do
+        let(:key) { SecureRandom.uuid }
+        let(:value) { SecureRandom.uuid }
+
         before do
-          stub_request(:post, notifications_url).with(headers: headers, body: body).and_return(status: 201, body: "{}")
+          stub_request(:post, notifications_url)
+            .with(headers: headers, body: body)
+            .and_return(status: 201, body: { key => value }.to_json)
         end
 
-        it "creates a notification" do
-          magicbell.create_notification(
+        it "creates the notification" do
+          notification = magicbell.create_notification(
             title: "Welcome to Muziboo",
             recipients: [{
               email: "john@example.com"
             }]
           )
+
+          expect(notification.send(:response_hash)[key]).to eq(value)
         end
       end
     end
